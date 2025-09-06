@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Juego secreto para Pau 💕</title>
+  <!-- Tipografía -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Canvas de efectos globales (lluvia de corazones) -->
+  <canvas id="hearts"></canvas>
+
+  <div id="app" role="main">
+    <!-- Pantalla de acceso -->
+    <section class="screen" id="screen-intro" aria-labelledby="intro-title">
+      <h1 id="intro-title">Juego secreto para Pau 💕</h1>
+      <p>Antes de empezar, tenés que demostrar que sos Pau de verdad...</p>
+      <p>¿Qué día y mes nos conocimos?</p>
+
+      <div class="input-row">
+        <input type="number" id="day" placeholder="Día" min="1" max="31" inputmode="numeric" autocomplete="off" />
+        <input type="number" id="month" placeholder="Mes" min="1" max="12" inputmode="numeric" autocomplete="off" />
+      </div>
+
+      <button id="btn-check-date" type="button">Ingresar</button>
+      <p id="intro-msg" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- Pantalla del juego -->
+    <section class="screen hidden" id="screen-game" aria-labelledby="game-title">
+      <h2 id="game-title" class="visually-hidden">Juego</h2>
+      <div class="progress" aria-live="polite">
+        Capibaras: <span id="capibaras">0</span>/10 🦫
+        <button id="sound-toggle" class="sound-btn" aria-pressed="true" title="Sonido">🔈</button>
+      </div>
+      <!-- barra de progreso -->
+      <div id="capi-progress" class="progressbar" aria-label="Progreso capibaras">
+        <div class="progressbar-fill" id="capi-progress-fill" style="width:0%"></div>
+      </div>
+
+      <div id="question-box"></div>
+    </section>
+
+    <!-- Pantalla final (antes de la pausa) -->
+    <section class="screen hidden" id="screen-final" aria-labelledby="final-title">
+      <h2 id="final-title">Muy bien mi amor 💖</h2>
+      <p>Completaste las 10 capibaras. Ahora queda una última pregunta secreta...</p>
+      <p>¿Me amás mucho mucho, de veritas veritas?</p>
+      <div class="options">
+        <button class="opt" id="btn-love-yes" type="button">Sí</button>
+        <button class="opt" id="btn-love-no" type="button">No</button>
+      </div>
+    </section>
+
+    <!-- Pantalla de pausa/anticipación (10s con animación) -->
+    <section class="screen hidden" id="screen-pause" aria-labelledby="pause-title" aria-live="polite">
+      <h2 id="pause-title">Espera un segundito… ✨</h2>
+      <p class="pause-sub">Cargando sorpresa...</p>
+      <div id="pause-anim" aria-hidden="true"></div>
+      <div class="loader" aria-hidden="true"></div>
+    </section>
+
+    <!-- Pantalla propuesta formal -->
+    <section class="screen hidden" id="screen-proposal" aria-labelledby="proposal-title">
+      <h2 id="proposal-title">Pregunta secreta final 💌</h2>
+      <p>¿Querés ser mi novia?</p>
+      <div class="options">
+        <button class="opt" id="btn-proposal-yes" type="button">Sí</button>
+        <button class="opt" id="btn-proposal-no" type="button">No</button>
+      </div>
+    </section>
+
+    <!-- Pantalla novios -->
+    <section class="screen hidden" id="screen-novios" aria-labelledby="novios-title">
+      <h2 id="novios-title">¡Qué bueno, mi amor! 🎉</h2>
+      <p>A partir de ahora somos novios oficiales ❤️</p>
+      <p>Anotá esta fecha y no te la olvides.</p>
+      <p>Te amo mucho.</p>
+
+      <div class="cta-row">
+        <button id="btn-save" type="button">Guardar el momento 📸</button>
+        <button id="btn-surprise" type="button">Una última sorpresa, tocame 🎁</button>
+      </div>
+
+      <div id="capture-area" class="hidden">
+        <h3>💌 Certificado de Noviazgo 💌</h3>
+        <p class="cert-sub">Otorgado a <b>Pau</b> por completar las 10 capibaras 🦫</p>
+        <p class="cert-sub">y responder <b>"Sí"</b> a la gran pregunta 💕</p>
+        <p id="date" class="cert-sub"></p>
+        <p class="cert-slogan">Te amo mucho, amo verte sonreír, espero nunca te olvides de eso. ✨</p>
+        <p class="cert-slogan">Gracias por darme la oportunidad, prometo hacerte feliz. </p>
+        <div class="cert-footer">💕 Paula Gomez y Marcos Anfuso son ahora novios oficiales 💕 </div>
+        <div class="cert-footer">Certificado Nº 0001</div>
+
+      </div>
+
+      <video id="video-surprise" class="hidden" controls playsinline>
+        <source src="video-pau-marc.mp4" type="video/mp4" />
+        Tu navegador no soporta el video.
+      </video>
+    </section>
+  </div>
+
+  <!-- Sprite SVG (por si lo quisieras usar en CSS/JS) -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="icon-heart" viewBox="0 0 32 29.6">
+        <path d="M23.6,0c-2.9,0-5.4,1.7-6.6,4.1C15.8,1.7,13.3,0,10.4,0C5.9,0,2.3,3.6,2.3,8
+                 c0,9.3,14.7,16.6,14.7,16.6S31.7,17.3,31.7,8C31.7,3.6,28.1,0,23.6,0z"/>
+      </symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24">
+        <path d="M12 1.8l3 6.1 6.7 1-4.8 4.7 1.1 6.7L12 17.7l-6 3.6 1.1-6.7L2.3 8.9l6.7-1z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- librería para generar imagen -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
